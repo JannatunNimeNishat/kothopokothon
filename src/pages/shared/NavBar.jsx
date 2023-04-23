@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
+import { useContext } from 'react';
 import { FaBars, FaTimes } from "react-icons/fa";
+import { Link } from 'react-router-dom';
+import { AuthContext } from '../../providers/AuthProvider';
 const NavBar = () => {
     const [open,setOpen] = useState(false);
+    const {user} = useContext(AuthContext);
+    // const user = null;
+
     return (
         <div className='my-container'>
             <div className='md:hidden p-2' onClick={()=> setOpen(!open)}>
@@ -15,9 +21,15 @@ const NavBar = () => {
 
             <nav className={`absolute md:static    mt-2 w-1/2 mx-auto md:w-full md:mt-0  md:flex justify-between items-center p-3  ${open ? 'top-10' : '-top-36'} `}>
 
-                <h4 className='text-2xl font-bold'>kothopokothon</h4>
-                <button  className='px-8 py-3 border border-2 border-gray-500 rounded-lg font-semibold'>Sign In</button>
+                <Link to='/'><h4 className='text-2xl font-bold'>kothopokothon</h4></Link>
 
+               {
+                user ?
+                <Link to='/logout'> <button className=' font-semibold text-white  px-5 py-2 rounded-lg bg-[#00A655]'>Sign Out</button></Link>
+                :
+                <Link to='/login'> <button className=' font-semibold text-white  px-5 py-2 rounded-lg bg-[#00A655]'>Sign In</button></Link>
+               }
+           
             </nav>
         </div>
     );
