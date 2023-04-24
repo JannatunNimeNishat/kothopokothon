@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import groupImg from '../assets/group.png'
+
 //
 import Lottie from "lottie-react";
 import groupLotti from '../assets/groupLotti.json'
@@ -9,6 +9,7 @@ import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import registerValidation from '../schemas/yupValidation';
 import { AuthContext } from '../providers/AuthProvider';
+import { sendEmailVerification } from 'firebase/auth';
 
 //formil
 const initialValue = {
@@ -19,34 +20,45 @@ const initialValue = {
 
 const Register = () => {
 
-    const {signUp} = useContext(AuthContext)
-    
-    const [signUpError,setSigUpError] = useState('');
+    const { signUp } = useContext(AuthContext)
+
+    const [signUpError, setSigUpError] = useState('');
     const navigate = useNavigate();
 
     //formik
     const { values, errors, handleChange, handleBlur, handleSubmit, touched } = useFormik({
         initialValues: initialValue,
-        validationSchema:registerValidation,
+        validationSchema: registerValidation,
         onSubmit: (values, action) => {
             const email = values.email;
             const password = values.password;
-            
+
             setSigUpError('');
             //createUserWithEmailAndPassword
-            signUp(email,password)
-            .then(result =>{
-                console.log(result.user);
-                setSuccess('successfully registered');
-               navigate('/chat');
-            })
-            .catch(error =>{
-                console.log(error.message);
-                setSigUpError(error.message)
-            })
+            signUp(email, password)
+                .then(result => {
+                    const signUpUser = result.user;
+                    // setSuccess('successfully registered');
+                    sendVerificationEmailHandler(signUpUser);
+                    navigate('/chat');
+                })
+                .catch(error => {
+                    console.log(error.message);
+                    setSigUpError(error.message)
+                })
             action.resetForm();
         }
-    })
+    });
+
+    const sendVerificationEmailHandler = (user)=>{
+        sendEmailVerification(user)
+        .then(result=>{
+            alert('please verify your email address')
+        })
+        .catch(error =>{
+            console.log(error.message);
+        })
+    }
 
     return (
         <div className='bg-[#D1D1D1] h-[calc(100vh-10px)] '>

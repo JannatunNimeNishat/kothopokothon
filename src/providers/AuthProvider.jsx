@@ -1,38 +1,38 @@
 import React, { createContext, useEffect, useState } from 'react';
 
 
-import {createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut} from 'firebase/auth'
+import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth'
 import app from '../firebase/firebase.config';
 const auth = getAuth(app)
 
 export const AuthContext = createContext(null);
 
-const AuthProvider = ({children}) => {
-    const [user,setUser] = useState(null);
+const AuthProvider = ({ children }) => {
+    const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    const signUp = (email,password)=>{
+    const signUp = (email, password) => {
         setLoading(true);
-        return createUserWithEmailAndPassword(auth,email,password)
+        return createUserWithEmailAndPassword(auth, email, password)
     }
-    const signIn = (email,password) =>{
+    const signIn = (email, password) => {
         setLoading(true);
-        return signInWithEmailAndPassword(auth,email,password);
-    } 
-    const logOut = ()=>{
+        return signInWithEmailAndPassword(auth, email, password);
+    }
+    const logOut = () => {
         return signOut(auth);
     }
 
-    useEffect(()=>{
-        const unSubscribe = onAuthStateChanged(auth, currentUser =>{
+    useEffect(() => {
+        const unSubscribe = onAuthStateChanged(auth, currentUser => {
             setLoading(false);
             setUser(currentUser)
         });
-        return ()=>{
+        return () => {
             unSubscribe();
         }
-    },[])
-    
+    }, [])
+
     const authInfo = {
         user,
         signUp,
@@ -42,9 +42,9 @@ const AuthProvider = ({children}) => {
     }
     return (
         <div>
-        <AuthContext.Provider value={authInfo}>
-            {children}
-            </AuthContext.Provider>        
+            <AuthContext.Provider value={authInfo}>
+                {children}
+            </AuthContext.Provider>
         </div>
     );
 };

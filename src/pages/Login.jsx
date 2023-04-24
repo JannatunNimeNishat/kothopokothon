@@ -22,7 +22,7 @@ const Login = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const from = location.state?.from?.pathname || '/chat';
-    
+
     //formik
     const { values, handleChange, handleBlur, handleSubmit } = useFormik({
         initialValues: initialValue,
