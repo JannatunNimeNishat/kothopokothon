@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import groupImg from '../assets/group.png'
 //
 import Lottie from "lottie-react";
 import groupLotti from '../assets/groupLotti.json'
 
 import { FaArrowRight, FaGoogle } from "react-icons/fa";
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import registerValidation from '../schemas/yupValidation';
+import { AuthContext } from '../providers/AuthProvider';
 
 //formil
 const initialValue = {
@@ -18,6 +19,11 @@ const initialValue = {
 
 const Register = () => {
 
+    const {signUp} = useContext(AuthContext)
+    
+    const [signUpError,setSigUpError] = useState('');
+    const navigate = useNavigate();
+
     //formik
     const { values, errors, handleChange, handleBlur, handleSubmit, touched } = useFormik({
         initialValues: initialValue,
@@ -25,7 +31,20 @@ const Register = () => {
         onSubmit: (values, action) => {
             const email = values.email;
             const password = values.password;
-            console.log(email, password);
+            
+            setSigUpError('');
+            //createUserWithEmailAndPassword
+            signUp(email,password)
+            .then(result =>{
+                console.log(result.user);
+                setSuccess('successfully registered');
+               navigate('/chat');
+            })
+            .catch(error =>{
+                console.log(error.message);
+                setSigUpError(error.message)
+            })
+            action.resetForm();
         }
     })
 
@@ -87,6 +106,9 @@ const Register = () => {
                     }
 
                     <p className='mb-2'><small>show password</small></p>
+                    {
+                        signUpError && <p className='text-red-700'><small>{signUpError}</small></p>
+                    }
                     <button className='mt-3 font-semibold text-white  px-5 py-2 rounded-lg bg-[#00A655]'>
                         Sign Up
                         <FaArrowRight className='inline ml-2' />
