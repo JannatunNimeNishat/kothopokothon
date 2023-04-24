@@ -1,40 +1,48 @@
 import React, { useContext, useState } from 'react';
-import groupImg from '../assets/group.png'
-//
 //
 import Lottie from "lottie-react";
 import groupLotti from '../assets/groupLotti.json'
 
 import { FaArrowRight, FaGoogle } from "react-icons/fa";
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../providers/AuthProvider';
 import { useFormik } from 'formik';
+
 //formik
 const initialValue = {
     email: '',
     password: ''
 }
 const Login = () => {
+    //hooks
     const { signIn } = useContext(AuthContext);
     const [signInError, setSignInError] = useState("");
     const [success, setSuccess] = useState('');
+
+    const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from?.pathname || '/chat';
+    
+    //formik
     const { values, handleChange, handleBlur, handleSubmit } = useFormik({
         initialValues: initialValue,
         onSubmit: (values, action) => {
             const email = values.email;
             const password = values.password;
-        
+
             setSignInError('');
             setSuccess('')
             //signInWithEmailAndPassword
-            signIn(email,password)
-            .then(result =>{
-                setSuccess('successfully login')
-                console.log(result.user);
-            })
-            .catch(error =>{
-                setSignInError(error.message)
-            })
+            signIn(email, password)
+                .then(result => {
+                    setSuccess('successfully login')
+                    console.log(result.user);
+
+                    navigate(from, { replace: true });
+                })
+                .catch(error => {
+                    setSignInError(error.message)
+                })
             action.resetForm();
         }
     })
@@ -77,7 +85,7 @@ const Login = () => {
                         signInError && <p className='text-red-700'><small>{signInError}</small></p>
                     }
                     {
-                       success  && <p className='text-green-700'><small>{success}</small></p>
+                        success && <p className='text-green-700'><small>{success}</small></p>
                     }
                     <button className='mt-3 font-semibold text-white  px-5 py-2 rounded-lg bg-[#00A655]'>
                         Sign In

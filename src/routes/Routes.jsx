@@ -4,6 +4,7 @@ import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import Chat from "../layouts/Chat";
+import PrivateRoute from "../PrivateRoutes/PrivateRoute";
 
 const router = createBrowserRouter([
     {
@@ -27,7 +28,7 @@ const router = createBrowserRouter([
     },
     {
         path:'chat',
-        element:<Chat></Chat> //this will be rapped with  protected route
+        element:<PrivateRoute><Chat></Chat></PrivateRoute> 
     }
 ])
 
