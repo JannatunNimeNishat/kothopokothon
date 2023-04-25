@@ -22,6 +22,8 @@ const Register = () => {
 
     const { signUp } = useContext(AuthContext)
 
+    const [open, setOpen] = useState(true);
+
     const [signUpError, setSigUpError] = useState('');
     const navigate = useNavigate();
 
@@ -50,14 +52,14 @@ const Register = () => {
         }
     });
 
-    const sendVerificationEmailHandler = (user)=>{
+    const sendVerificationEmailHandler = (user) => {
         sendEmailVerification(user)
-        .then(result=>{
-            alert('please verify your email address')
-        })
-        .catch(error =>{
-            console.log(error.message);
-        })
+            .then(result => {
+                alert('please verify your email address')
+            })
+            .catch(error => {
+                console.log(error.message);
+            })
     }
 
     return (
@@ -102,7 +104,8 @@ const Register = () => {
                             null
                     }
                     <input className='border rounded-lg w-full py-3 pl-2 mb-3'
-                        type="password"
+                        type={`${open ? 'password' : 'text'}`}
+                        // type="password"
                         name="confirmPassword"
                         id="confirmPassword"
                         placeholder='Confirm Password'
@@ -117,7 +120,8 @@ const Register = () => {
                             null
                     }
 
-                    <p className='mb-2'><small>show password</small></p>
+                    <p onClick={()=> setOpen(!open)} className='mb-2'><small>show password</small></p>
+
                     {
                         signUpError && <p className='text-red-700'><small>{signUpError}</small></p>
                     }
